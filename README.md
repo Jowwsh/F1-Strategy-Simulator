@@ -17,5 +17,5 @@ The core of this project is a Marco Decision Process and value iteration, to fin
 
 I plan to build this in an agile manner, producing multiple prototypes from the ground up. The first prototype will simply be a brute force search before implementing MDPs, more data, real world input, and further UI
 
-## Current Status: 
-Planning
+## Current Status 
+Creating first prototype
