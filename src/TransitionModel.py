@@ -13,7 +13,7 @@ def tyre_wear(race_state, action):
     race_state.tyre_wear = round(race_state.tyre_wear, 7)
 
 def decrease_fuel(race_state):
-    FUEL_RATE = 2
+    FUEL_RATE = 100 / race_state.total_laps
     race_state.fuel_load -= FUEL_RATE
 
 def compute_lap_time(race_state, action):
@@ -38,6 +38,7 @@ def apply_action(race_state, action):
     decrease_fuel(race_state)
     lap_time = compute_lap_time(race_state, action)
     race_state.current_lap += 1
+    race_state.lap_time_history.append(lap_time)
     return lap_time
 
 

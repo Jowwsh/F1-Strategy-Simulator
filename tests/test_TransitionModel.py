@@ -6,7 +6,7 @@ from src.TransitionModel import *
 class TestTransitionModel(unittest.TestCase):
 
     def setUp(self):
-        self.test_state = RaceState(0, 50, "medium", 0, 100, [], [])
+        self.test_state = RaceState(1, 50, "medium", 0, 100, [], [])
 
     def test_tyre_wear_normal(self):
         tyre_wear(self.test_state, Action.NORMAL)
@@ -48,10 +48,15 @@ class TestTransitionModel(unittest.TestCase):
             self.setUp()
             first_lap = apply_action(self.test_state, action)
             self.setUp()
-            self.test_state.fuel_load = 0.5
+            self.test_state.fuel_load = 25
             second_lap = apply_action(self.test_state, action)
             self.assertGreater(first_lap, second_lap)
 
     def test_pit_lap_is_recorded(self):
         apply_action(self.test_state, Action.PIT)
-        self.assertEqual(self.test_state.pit_stops, [0])
+        self.assertEqual(self.test_state.pit_stops, [1])
+
+    def test_lap_times_are_recorded(self):
+        for _ in range(5):
+            apply_action(self.test_state, Action.NORMAL)
+        self.assertEqual(len(self.test_state.lap_time_history), 5)
