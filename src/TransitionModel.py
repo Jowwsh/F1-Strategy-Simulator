@@ -1,5 +1,5 @@
-from Actions import Action
-from RaceState import RaceState
+from src.Actions import Action
+from src.RaceState import RaceState
 
 def tyre_wear(race_state, action):
     WEAR_RATE = 0.035
@@ -7,9 +7,10 @@ def tyre_wear(race_state, action):
     if action == Action.PIT:
         race_state.tyre_wear = 0
     elif action == Action.PUSH:
-        race_state.tyre_wear += round(WEAR_RATE * PUSH_MULTIPLIER, 4)
+        race_state.tyre_wear += WEAR_RATE * PUSH_MULTIPLIER
     else:
         race_state.tyre_wear += WEAR_RATE
+    race_state.tyre_wear = round(race_state.tyre_wear, 7)
 
 def decrease_fuel(race_state):
     FUEL_RATE = 2
@@ -18,9 +19,9 @@ def decrease_fuel(race_state):
 def compute_lap_time(race_state, action):
     BASE_LAP_TIME = 90
     TYRE_WEAR_PENALTY = 2.85
-    FUEL_PENALTY = 3
+    FUEL_PENALTY = 0.03
     PUSH_TIME_SAVE = 1
-    PIT_STOP_TIME = 22
+    PIT_STOP_TIME = 23
     lap_time = BASE_LAP_TIME = 90
     lap_time += race_state.tyre_wear * TYRE_WEAR_PENALTY
     lap_time += race_state.fuel_load * FUEL_PENALTY
@@ -29,7 +30,7 @@ def compute_lap_time(race_state, action):
     if action == Action.PIT:
         lap_time += PIT_STOP_TIME
         race_state.pit_stops.append(race_state.current_lap)
-    return lap_time
+    return round(lap_time, 7)
         
 
 def apply_action(race_state, action):

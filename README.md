@@ -3,7 +3,7 @@
 ## Project Intro
 
 This project will calculate the best strategy for an F1 race using a variety of different pieces of data, including tyre wear, fuel loads and lap counts, finding optimal pit windows and tyre choices/
-The core of this project is a Marco Decision Process and value iteration, to find the optimal policy (strategy) under uncertainty
+The core of this project is a Markov Decision Process and value iteration, to find the optimal policy (strategy) under uncertainty
 
 ## Planned Features
 
@@ -17,5 +17,9 @@ The core of this project is a Marco Decision Process and value iteration, to fin
 
 I plan to build this in an agile manner, producing multiple prototypes from the ground up. The first prototype will simply be a brute force search before implementing MDPs, more data, real world input, and further UI
 
-## Current Status 
-Creating first prototype
+**Current Status: Creating first prototype**
+
+## Testing
+This project uses Python's built-in unittest framework.
+Tests cover the transition model (tyre wear, fuel load, lap time, pit stops)
+to ensure the simulation behaves predictably before strategy search is implemented
