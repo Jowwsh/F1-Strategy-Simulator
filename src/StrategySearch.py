@@ -14,22 +14,24 @@ def simulate_race(race_state):
             apply_action(race_state, Action.NORMAL)
     return (sum(race_state.lap_time_history), start_tyres, race_state)
 
-def find_best_strategy(total_laps=50):
+def generate_strategies():
     strategies = []
-    race_info = []
     TYRES = [SOFT, MEDIUM, HARD]
     strategies += [[tyre1, tyre2] for tyre1 in TYRES for tyre2 in TYRES if tyre1 != tyre2]
     strategies += [[tyre1, tyre2, tyre3] for tyre1 in TYRES for tyre2 in TYRES for tyre3 in TYRES if not(tyre1 == tyre2 == tyre3)]
     strategies += [[tyre1, tyre2, tyre3, tyre4] for tyre1 in TYRES for tyre2 in TYRES for tyre3 in TYRES for tyre4 in TYRES if not(tyre1 == tyre2 == tyre3 == tyre4)]
+    return strategies
+
+def find_best_strategy(total_laps=50):
+    race_info = []
+    strategies = generate_strategies()
     for i, strategy in enumerate(strategies):
-        print(f"on strategy {i} out of {len(strategies)}")
         # one stop
         if len(strategy) == 2:
             for pit_lap in range(1, total_laps):
                 race_state = RaceState(1, total_laps, strategy[0], 0, 100, [], [(pit_lap, strategy[1])], 1)
                 race_info.append(simulate_race(race_state))
         # two stops
-            print("here")
         elif len(strategy) == 3:
             for pit_lap_1 in range(1, total_laps-1):
                 for pit_lap_2 in range(pit_lap_1+1, total_laps):

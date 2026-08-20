@@ -27,11 +27,22 @@
 * This is a simple function that converts time in the form seconds.milliseconds into hours:minutes:seconds.milliseconds, using modulus and floor division operations
 * This is done before the full race time is printed for readability
 
-## The strategy search (first prototype)
+## The strategy search
 
+### First prototype
 * The first prototype of the strategy search is a linear brute-force search, to achieve a minimum viable product (MVP)
 * It finds the optimum pit stop lap by simulating a full race with each possible pit stop lap, and finding the one with the minimum time
 * It only changes between the actions NORMAL and PIT
 * It simulates a race using the transition model for each lap, therefore is making the same linear modelling assumptions as previously discussed
 * It returns a tuple with the best full race time, and the corresponding best pit lap
 * This tuple is then formatted and printed by main.py
+
+### Second prototype
+* The second prototype is still a linear brute-force search, but searches many more strategies (over 15 million for a 50 lap race)
+* It tests one, two and three stop strategies, and the usage of soft, medium and hard compound tyres, all with different stats
+* This greatly expands the search space. In particular, all possible three stop strategies can take time to search through
+* It has no form of pruning, searching strategies that clearly are bad, for example pitting in the first 3 laps of the race, then not pitting for the rest of the race on soft tyres
+* It still only distinguishes between the actions NORMAL and PIT, not accounting for pushing. It still uses linear modelling assumptions
+* It returns a tuple containing the best full race time, the starting tyre for the optimal strategy, and the full race state (containing lap time history and details of pit stops)
+* It works by generating all possible tyre strategies, then simulating a full racw with every pit lap combination on every tyre strategy
+* This tuple is formatted and printed by main.py
