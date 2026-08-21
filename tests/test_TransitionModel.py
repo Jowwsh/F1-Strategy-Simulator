@@ -7,7 +7,7 @@ from src.TyreCompounds import SOFT, MEDIUM, HARD
 class TestTransitionModel(unittest.TestCase):
 
     def setUp(self):
-        self.test_state = RaceState(1, 50, SOFT, 0, 100, [], [(1, MEDIUM)], 1)
+        self.test_state = RaceState(1, 50, SOFT, 0, 110, [], [(1, MEDIUM)], 1, False)
 
     def test_more_tyre_wear_when_pushing(self):
         tyre_wear(self.test_state, Action.NORMAL)
@@ -24,7 +24,7 @@ class TestTransitionModel(unittest.TestCase):
 
     def test_fuel_decrease(self):
         original_fuel = self.test_state.fuel_load
-        decrease_fuel(self.test_state)
+        decrease_fuel(self.test_state, Action.NORMAL)
         self.assertLess(self.test_state.fuel_load, original_fuel)
 
     def test_push_faster_than_normal(self):
@@ -113,9 +113,9 @@ class TestTransitionModel(unittest.TestCase):
         self.assertEqual(self.test_state.tyre_wear, 1)
 
     def test_fuel_multiplier_endpoints(self):
-        self.assertEqual(0.9 * (11/9)**(self.test_state.fuel_load/100), 1.1)
+        self.assertEqual(0.9 * (11/9)**(self.test_state.fuel_load/110), 1.1)
         self.test_state.fuel_load = 0
-        self.assertEqual(0.9 * (11/9)**(self.test_state.fuel_load/100), 0.9)
+        self.assertEqual(0.9 * (11/9)**(self.test_state.fuel_load/110), 0.9)
 
     def test_fuel_multiplier_is_non_linear(self):
         self.assertNotEqual((0.9 * (11/9)**(100/100)) - (0.9 * (11/9)**(98/100)), (0.9 * (11/9)**(99/100)) - (0.9 * (11/9)**(96/100)))
@@ -127,3 +127,24 @@ class TestTransitionModel(unittest.TestCase):
         tyre_wear(self.test_state, Action.NORMAL)
         wear3 = self.test_state.tyre_wear
         self.assertNotEqual(wear2 - wear1, wear3 - wear2)
+
+    def test_more_fuel_burn_when_more_fuel(self):
+        decrease_fuel(self.test_state, Action.NORMAL)
+        burn1 = 110 - self.test_state.fuel_load
+        self.test_state.fuel_load = 10
+        decrease_fuel(self.test_state, Action.NORMAL)
+        burn2 = 10 - self.test_state.fuel_load
+        self.assertGreater(burn2, burn1)
+
+    def test_push_increases_fuel_burn(self):
+        decrease_fuel(self.test_state, Action.NORMAL)
+        normal_burn = 110 - self.test_state.fuel_load
+        self.setUp()
+        decrease_fuel(self.test_state, Action.PUSH)
+        push_burn = 110 - self.test_state.fuel_load
+        self.assertGreater(push_burn, normal_burn)
+
+    def test_out_of_fuel_triggers_dnf(self):
+        self.test_state.fuel_load = 1
+        decrease_fuel(self.test_state, Action.NORMAL)
+        self.assertTrue(self.test_state.dnf)

@@ -3,7 +3,8 @@
 ## The race state
 
 * The race state is what tracks the different parameters of the race at any given time.
-* In the first prototype, this includes the current lap, total laps, current tyre compound, tyre wear and fuel load
+* In the first prototype, this included the current lap, total laps, current tyre compound, tyre wear and fuel load
+* It has been expanded to include lap time history, pit stop strategy, the stint number and a DNF flag
 * It is updated per lap, based on its current value, and action being taken by the racing driver, which is decided by the strategy choice
 
 ## Actions
@@ -26,6 +27,11 @@
 
 * This is a simple function that converts time in the form seconds.milliseconds into hours:minutes:seconds.milliseconds, using modulus and floor division operations
 * This is done before the full race time is printed for readability
+
+## Tyre compounds
+
+* The soft, medium and hard tyre compounds are constant objects of the `TyreCompound` class
+* They have different curves for tyre wear, multipliers for fuel burn, and lap time multipliers, all as attributes
 
 ## The strategy search
 
@@ -58,3 +64,14 @@
 * Tyre wear is modelled exponentially based on existing tyre wear. It is then multiplied with a fuel multiplier, which is also created through an exponential curve
 * These multipliers are then also multiplied with a set multiplier if the car is in push mode
 * This simulates tyre 'cliffs' the effect of heavy fuel increasing tyre wear, and further distinguishes between the different compounds, increasing the realism of the simulator
+
+### Fuel burn models
+* The first model for fuel burn was also linear
+* Fuel is now burnt in a non-linear fashion. It depends on how much fuel is already in the tank, choice of tyre, and if the driver is in push mode
+* Less fuel means a lighter car which means less fuel is burnt per lap
+* Softer tyres and pushing means more aggressive driving which increases fuel consumption
+* Tyre compounds store this fuel burn multiplier as an attribute
+* Pushing increases fuel burn multiplicatively, which in combination with the non-linear model means pushing early burns significantly more fuel than pushing late in the race
+* If in a race simulation the car runs out of fuel, a flag is raised in the `RaceState` class, which then records that strategy as invalid with a race time of 99999999999999999
+* The cars are fuelled with 110kg in this model, and will use 100kg if they do not push, and on the medium tyre. 10kg is reserved for pushing and softer compounds
+* This strategically makes pushing late in the race more efficient, and pushing too hard at the start can mean you run out of fuel, but will decrease tyre wear for the rest of the race

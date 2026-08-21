@@ -20,6 +20,10 @@ The first prototype of the strategy search could only consider one-stop strategi
 Now, the strategy search engine can find the optimal one, two or three stop strategy, and considers soft, medium and hard tyres, with different stats.
 It brute force tests every possible strategy (tyre combinations, and pit laps), and returns the strategy with the best time.
 
+## Mathematical modelling
+
+Tyre wear and fuel burn both use non-linear models, that feed into themselves and each other. Tyres that are more worn increase in wear faster, more fuel increases tyre wear, less fuel means a lighter car so less fuel is used per lap. Softer tyres and pushing more will multiplicatively increase fuel burn and tyre wear
+
 ## Project Roadmap
 
 I plan to build this in an agile manner, producing multiple prototypes from the ground up. 
