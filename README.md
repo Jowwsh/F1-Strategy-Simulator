@@ -14,7 +14,7 @@ The core of this project is a Markov Decision Process and value iteration, to fi
 * Database usage
 * Using real world data
 
-## Strategy Search
+## The Strategy Search
 
 The first prototype of the strategy search could only consider one-stop strategies, and only one compound of tyre.
 Now, the strategy search engine can find the optimal one, two or three stop strategy, and considers soft, medium and hard tyres, with different stats.
@@ -24,9 +24,10 @@ It brute force tests every possible strategy (tyre combinations, and pit laps), 
 
 I plan to build this in an agile manner, producing multiple prototypes from the ground up. 
 The first prototype is simply be a brute force search, a one-stop strategy, linear models, and no regard to tyre compounds.
-Further prototypes will use better models, calculate when to push or conserve fuel and tyres, have multiple stops with different tyre compounds, and use MDPs as the main strategy search engine.
+The second incorporates logic for multi-stop strategies and multiple tyre compounds.
+Further prototypes will use better models, calculate when to push or conserve fuel and tyres, and use MDPs as the main strategy search engine.
 
-**Current Status: Completed second prototype**
+**Current Status: Improving tyre and fuel models**
 
 ## Testing
 

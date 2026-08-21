@@ -5,10 +5,13 @@ def tyre_wear(race_state, action):
     wear_rate = race_state.tyre_compound.wear_rate
     PUSH_MULTIPLIER = 2
     if action == Action.PUSH:
-        race_state.tyre_wear += wear_rate * PUSH_MULTIPLIER
+        race_state.tyre_wear += wear_rate * race_state.tyre_compound.calculate_wear_multiplier(race_state.tyre_wear, race_state.fuel_load) * PUSH_MULTIPLIER
     else:
-        race_state.tyre_wear += wear_rate
-    race_state.tyre_wear = round(race_state.tyre_wear, 7)
+        race_state.tyre_wear += wear_rate * race_state.tyre_compound.calculate_wear_multiplier(race_state.tyre_wear, race_state.fuel_load)
+    if race_state.tyre_wear <= 1:
+        race_state.tyre_wear = round(race_state.tyre_wear, 7)
+    else:
+        race_state.tyre_wear = 1
 
 def decrease_fuel(race_state):
     FUEL_RATE = 100 / race_state.total_laps

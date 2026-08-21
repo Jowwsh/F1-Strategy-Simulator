@@ -46,3 +46,15 @@
 * It returns a tuple containing the best full race time, the starting tyre for the optimal strategy, and the full race state (containing lap time history and details of pit stops)
 * It works by generating all possible tyre strategies, then simulating a full racw with every pit lap combination on every tyre strategy
 * This tuple is formatted and printed by main.py
+
+## Mathematical modelling
+
+### Tyre wear models
+* The first model for tyre wear was linear, increasing by the same amount each lap
+* The improved tyre wear model uses compound-specific exponential curves
+* Each compound has a base wear amount, a lap-time multiplier, and a set curve steepness
+* The tyre compound class has a function `calculate_wear_multiplier()`
+* This function uses the current tyre wear, and current fuel load, to output a tyre wear multiplier
+* Tyre wear is modelled exponentially based on existing tyre wear. It is then multiplied with a fuel multiplier, which is also created through an exponential curve
+* These multipliers are then also multiplied with a set multiplier if the car is in push mode
+* This simulates tyre 'cliffs' the effect of heavy fuel increasing tyre wear, and further distinguishes between the different compounds, increasing the realism of the simulator

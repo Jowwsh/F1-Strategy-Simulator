@@ -25,7 +25,9 @@ def generate_strategies():
 def find_best_strategy(total_laps=50):
     race_info = []
     strategies = generate_strategies()
+    # strategies = [[]]
     for i, strategy in enumerate(strategies):
+        print(f"On strategy {i+1} out of {len(strategies)}")
         # one stop
         if len(strategy) == 2:
             for pit_lap in range(1, total_laps):
