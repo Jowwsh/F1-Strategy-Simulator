@@ -7,7 +7,7 @@ from src.TyreCompounds import SOFT, MEDIUM, HARD
 class TestTransitionModel(unittest.TestCase):
 
     def setUp(self):
-        self.test_state = RaceState(1, 50, SOFT, 0, 110, [], [(1, MEDIUM)], 1, False)
+        self.test_state = RaceState(1, 50, SOFT, 0, 110, [], [(1, MEDIUM)], 1, False, 0)
 
     def test_more_tyre_wear_when_pushing(self):
         tyre_wear(self.test_state, Action.NORMAL)
@@ -148,3 +148,35 @@ class TestTransitionModel(unittest.TestCase):
         self.test_state.fuel_load = 1
         decrease_fuel(self.test_state, Action.NORMAL)
         self.assertTrue(self.test_state.dnf)
+
+    def test_stint_length_resets_on_pit(self):
+        apply_action(self.test_state, Action.PIT)
+        self.assertEqual(self.test_state.stint_length, 0)
+
+    def test_stint_length_increases(self):
+        apply_action(self.test_state, Action.NORMAL)
+        self.assertEqual(self.test_state.stint_length, 1)
+
+    def test_tyre_warmup_penalty_soft(self):
+        self.assertEqual(tyre_warmup_penalty(self.test_state), 1.5)
+
+    def test_tyre_warmup_penalty_medium(self):
+        apply_action(self.test_state, Action.PIT)
+        penalty = tyre_warmup_penalty(self.test_state)
+        apply_action(self.test_state, Action.NORMAL)
+        penalty += tyre_warmup_penalty(self.test_state)
+        self.assertEqual(penalty, 2.5)
+
+    def test_tyre_warmup_penalty_hard(self):
+        self.test_state.tyre_compound = HARD
+        penalty = tyre_warmup_penalty(self.test_state)
+        apply_action(self.test_state, Action.NORMAL)
+        penalty += tyre_warmup_penalty(self.test_state)
+        apply_action(self.test_state, Action.NORMAL)
+        penalty += tyre_warmup_penalty(self.test_state)
+        self.assertEqual(penalty, 4)
+
+    def test_stint_decay(self):
+        self.test_state.stint_length = 12
+        penalty = stint_decay_penalty(self.test_state)
+        self.assertEqual(penalty, 0.2)

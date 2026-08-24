@@ -33,8 +33,18 @@ def pit_stop(race_state, lap_time):
         race_state.tyre_compound = race_state.pit_stops[race_state.stint_num-1][1]
         race_state.stint_num += 1
         race_state.tyre_wear = 0
+        race_state.stint_length = -1
         return lap_time
 
+def tyre_warmup_penalty(race_state):
+    if race_state.stint_length < len(race_state.tyre_compound.warmup_penalty):
+        return race_state.tyre_compound.warmup_penalty[race_state.stint_length]
+    else:
+        return 0
+
+def stint_decay_penalty(race_state):
+    STINT_LENGTH_PENALTY = 0.1
+    return STINT_LENGTH_PENALTY * (race_state.stint_length // race_state.tyre_compound.stint_decay_laps)
 
 def compute_lap_time(race_state, action):
     BASE_LAP_TIME = 90
@@ -44,6 +54,8 @@ def compute_lap_time(race_state, action):
     lap_time = BASE_LAP_TIME
     lap_time += race_state.tyre_wear * TYRE_WEAR_PENALTY
     lap_time += race_state.fuel_load * FUEL_PENALTY
+    lap_time += tyre_warmup_penalty(race_state)
+    lap_time += stint_decay_penalty(race_state)
     lap_time *= race_state.tyre_compound.lap_time_multiplier
     if action == Action.PUSH:
         lap_time -= PUSH_TIME_SAVE
@@ -57,6 +69,7 @@ def apply_action(race_state, action):
     decrease_fuel(race_state, action)
     lap_time = compute_lap_time(race_state, action)
     race_state.current_lap += 1
+    race_state.stint_length += 1
     race_state.lap_time_history.append(lap_time)
     return lap_time
 

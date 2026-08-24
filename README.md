@@ -31,7 +31,7 @@ The first prototype is simply be a brute force search, a one-stop strategy, line
 The second incorporates logic for multi-stop strategies and multiple tyre compounds.
 Further prototypes will use better models, calculate when to push or conserve fuel and tyres, and use MDPs as the main strategy search engine.
 
-**Current Status: Improving tyre and fuel models**
+**Current Status: Implementing different track models**
 
 ## Testing
 
