@@ -17,5 +17,5 @@ class TyreCompound:
     
 
 SOFT = TyreCompound("Soft", lap_time_multiplier=1.000, wear_rate=0.035, curve_rate = 3, fuel_multiplier = 1.01, warmup_penalty=[1.5], stint_decay_laps = 5)
-MEDIUM = TyreCompound("Medium", lap_time_multiplier=1.004, wear_rate=0.024, curve_rate = 2.2, fuel_multiplier = 1.00, warmup_penalty=[2, 0.5], stint_decay_laps = 8)
+MEDIUM = TyreCompound("Medium", lap_time_multiplier=1.006, wear_rate=0.024, curve_rate = 2.2, fuel_multiplier = 1.00, warmup_penalty=[2, 0.5], stint_decay_laps = 8)
 HARD = TyreCompound("Hard", lap_time_multiplier=1.01, wear_rate=0.018, curve_rate = 1.7, fuel_multiplier = 0.99, warmup_penalty=[2.5, 1.2, 0.3], stint_decay_laps = 10)

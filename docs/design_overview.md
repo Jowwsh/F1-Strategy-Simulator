@@ -34,6 +34,16 @@
 * The soft, medium and hard tyre compounds are constant objects of the `TyreCompound` class
 * They have different curves for tyre wear, multipliers for fuel burn, and lap time multipliers, all as attributes
 
+## Tracks
+
+* The simulator can currently find the optimal strategy on five different F1 tracks: Monaco, Monza, Silverstone, Bahrain, and Spa
+* Each track has the following attributes: name, base lap time, total laps, grip, evolution rate, tyre wear factor, and fuel factor
+* Grip is a divisor of total lap time, so higher grip means a faster lap
+* The evolution rate is a divisor of lap time that increases with respect to the current lap, simulating how an F1 track gets faster as rubber from the tyres is laid down
+* The tyre wear factor is a multiplier influencing how much each track wears out the tyres - Spa wears much more than Monaco, for example
+* Fuel factor is a multiplier defining how much fuel is burned per lap - Monza burns more fuel than Monaco for example, meaning pushing at Monza is more risky
+* The current values are representative, but not entirely realistic. This is to create a variety of different types of tracks
+
 ## The strategy search
 
 ### First prototype

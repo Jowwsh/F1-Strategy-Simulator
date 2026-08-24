@@ -3,11 +3,12 @@ from src.RaceState import RaceState
 from src.Actions import Action
 from src.TransitionModel import *
 from src.TyreCompounds import SOFT, MEDIUM, HARD
+from src.Tracks import MONACO, MONZA, SILVERSTONE, BAHRAIN, SPA
 
 class TestTransitionModel(unittest.TestCase):
 
     def setUp(self):
-        self.test_state = RaceState(1, 50, SOFT, 0, 110, [], [(1, MEDIUM)], 1, False, 0)
+        self.test_state = RaceState(1, 50, SOFT, 0, 110, [], [(1, MEDIUM)], 1, False, 0, SILVERSTONE)
 
     def test_more_tyre_wear_when_pushing(self):
         tyre_wear(self.test_state, Action.NORMAL)
@@ -180,3 +181,36 @@ class TestTransitionModel(unittest.TestCase):
         self.test_state.stint_length = 12
         penalty = stint_decay_penalty(self.test_state)
         self.assertEqual(penalty, 0.2)
+
+    def test_more_tyre_wear_on_higher_wear_track(self):
+        tyre_wear(self.test_state, Action.NORMAL)
+        higher_wear = self.test_state.tyre_wear
+        self.setUp()
+        self.test_state.track = MONZA
+        tyre_wear(self.test_state, Action.NORMAL)
+        lower_wear = self.test_state.tyre_wear
+        self.assertGreater(higher_wear, lower_wear)
+
+    def test_more_fuel_burn_on_higher_burn_track(self):
+        decrease_fuel(self.test_state, Action.NORMAL)
+        higher_fuel = self.test_state.fuel_load
+        self.setUp()
+        self.test_state.track = MONZA
+        decrease_fuel(self.test_state, Action.NORMAL)
+        lower_fuel = self.test_state.fuel_load
+        self.assertGreater(higher_fuel, lower_fuel)
+
+    def test_faster_lap_time_on_quicker_track(self):
+        lap1 = apply_action(self.test_state, Action.NORMAL)
+        self.setUp()
+        self.test_state.track = MONACO
+        lap2 = apply_action(self.test_state, Action.NORMAL)
+        self.assertGreater(lap1, lap2)
+
+    def test_track_evolution(self):
+        lap1 = apply_action(self.test_state, Action.NORMAL)
+        self.setUp()
+        self.test_state.current_lap = 2
+        lap2 = apply_action(self.test_state, Action.NORMAL)
+        self.assertGreater(lap1, lap2)
+

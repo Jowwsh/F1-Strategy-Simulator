@@ -1,6 +1,6 @@
 class RaceState:
 
-    def __init__(self, current_lap, total_laps, tyre_compound, tyre_wear, fuel_load, lap_time_history, pit_stops, stint_num, dnf, stint_length):
+    def __init__(self, current_lap, total_laps, tyre_compound, tyre_wear, fuel_load, lap_time_history, pit_stops, stint_num, dnf, stint_length, track):
         self.current_lap = current_lap
         self.total_laps = total_laps
         self.tyre_compound = tyre_compound
@@ -11,6 +11,7 @@ class RaceState:
         self.stint_num = stint_num
         self.dnf = dnf
         self.stint_length = stint_length
+        self.track = track
 
 
 

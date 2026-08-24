@@ -18,6 +18,7 @@ The core of this project is a Markov Decision Process and value iteration, to fi
 
 The first prototype of the strategy search could only consider one-stop strategies, and only one compound of tyre.
 Now, the strategy search engine can find the optimal one, two or three stop strategy, and considers soft, medium and hard tyres, with different stats.
+It can find the optimal strategy across five different tracks - Monaco, Monza, Silverstone, Bahrain and Spa. Each track has different stats, interacting with pace, tyre wear and fuel burn
 It brute force tests every possible strategy (tyre combinations, and pit laps), and returns the strategy with the best time.
 
 ## Mathematical modelling
