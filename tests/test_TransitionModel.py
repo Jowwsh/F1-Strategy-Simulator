@@ -8,7 +8,7 @@ from src.Tracks import MONACO, MONZA, SILVERSTONE, BAHRAIN, SPA
 class TestTransitionModel(unittest.TestCase):
 
     def setUp(self):
-        self.test_state = RaceState(1, 50, SOFT, 0, 110, [], [(1, MEDIUM)], 1, False, 0, SILVERSTONE)
+        self.test_state = RaceState(1, 50, SOFT, 0, 110, [], [(1, MEDIUM)], 1, False, 0, SILVERSTONE, False, -1)
 
     def test_more_tyre_wear_when_pushing(self):
         tyre_wear(self.test_state, Action.NORMAL)

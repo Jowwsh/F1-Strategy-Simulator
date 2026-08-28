@@ -28,27 +28,27 @@ def find_best_strategy(track):
     MAX_FUEL = 110
     total_laps = track.laps
     race_info = []
-    strategies = generate_strategies()
+    # strategies = generate_strategies()
     strategies = [[MEDIUM, HARD]]
     for i, strategy in enumerate(strategies):
         print(f"On strategy {i+1} out of {len(strategies)}")
         # one stop
         if len(strategy) == 2:
             for pit_lap in range(1, total_laps):
-                race_state = RaceState(1, total_laps, strategy[0], 0, MAX_FUEL, [], [(pit_lap, strategy[1])], 1, False, 0, track)
+                race_state = RaceState(1, total_laps, strategy[0], 0, MAX_FUEL, [], [(pit_lap, strategy[1])], 1, False, 0, track, False, -1)
                 race_info.append(simulate_race(race_state))
         # two stops
         elif len(strategy) == 3:
             for pit_lap_1 in range(1, total_laps-1):
                 for pit_lap_2 in range(pit_lap_1+1, total_laps):
-                    race_state = RaceState(1, total_laps, strategy[0], 0, MAX_FUEL, [], [(pit_lap_1, strategy[1]), (pit_lap_2, strategy[2])], 1, False, 0, track)
+                    race_state = RaceState(1, total_laps, strategy[0], 0, MAX_FUEL, [], [(pit_lap_1, strategy[1]), (pit_lap_2, strategy[2])], 1, False, 0, track, False, -1)
                     race_info.append(simulate_race(race_state))
         # 3 stops
         else:
             for pit_lap_1 in range(1, total_laps-2):
                 for pit_lap_2 in range(pit_lap_1+1, total_laps-1):
                     for pit_lap_3 in range(pit_lap_2+1, total_laps):
-                        race_state = RaceState(1, total_laps, strategy[0], 0, MAX_FUEL, [], [(pit_lap_1, strategy[1]), (pit_lap_2, strategy[2]), (pit_lap_3, strategy[3])], 1, False, 0, track)
+                        race_state = RaceState(1, total_laps, strategy[0], 0, MAX_FUEL, [], [(pit_lap_1, strategy[1]), (pit_lap_2, strategy[2]), (pit_lap_3, strategy[3])], 1, False, 0, track, False, -1)
                         race_info.append(simulate_race(race_state))
                         
 

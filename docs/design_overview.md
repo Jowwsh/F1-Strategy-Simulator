@@ -44,6 +44,15 @@
 * Fuel factor is a multiplier defining how much fuel is burned per lap - Monza burns more fuel than Monaco for example, meaning pushing at Monza is more risky
 * The current values are representative, but not entirely realistic. This is to create a variety of different types of tracks
 
+## Randomness
+
+* In order for an MDP to be viable as opposed to a brute force search, the transitions between states (laps) must feature stochastic elements
+* Lap time has been given random noise, using a gaussian distribution. The standard deviation of this distribution depends on the tyre choice, with softer tyres having more variance
+* Tyre wear has also been modified with the addition of a uniform distribution to the base tyre wear, simulating the realism tyre wear in F1
+* Safety cars have a set probability to appear each lap, dependent on the chosen track. They then last between 2 and 5 laps
+* Safety cars increase base lap time (but decrease lap time variance), decrease tyre wear and fuel burn, and importantly, reduce pit stop time
+* I tested these probabilities and effects by running simulations many times to confirm the expected value was accurate, and analysing the lap times.
+
 ## The strategy search
 
 ### First prototype

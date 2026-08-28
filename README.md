@@ -20,6 +20,7 @@ The first prototype of the strategy search could only consider one-stop strategi
 Now, the strategy search engine can find the optimal one, two or three stop strategy, and considers soft, medium and hard tyres, with different stats.
 It can find the optimal strategy across five different tracks - Monaco, Monza, Silverstone, Bahrain and Spa. Each track has different stats, interacting with pace, tyre wear and fuel burn
 It brute force tests every possible strategy (tyre combinations, and pit laps), and returns the strategy with the best time.
+The latest prototype adds randomness to lap times, tyre wear and safety cars, so brute force is no longer the optimal strategy. An MDP implemented will solve this
 
 ## Mathematical modelling
 
@@ -32,7 +33,7 @@ The first prototype is simply be a brute force search, a one-stop strategy, line
 The second incorporates logic for multi-stop strategies and multiple tyre compounds.
 Further prototypes will use better models, calculate when to push or conserve fuel and tyres, and use MDPs as the main strategy search engine.
 
-**Current Status: Implementing different track models**
+**Current Status: Implementing the MDP**
 
 ## Testing
 
