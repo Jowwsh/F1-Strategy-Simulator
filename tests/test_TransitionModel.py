@@ -8,10 +8,10 @@ from src.Tracks import MONACO, MONZA, SILVERSTONE, BAHRAIN, SPA
 class TestTransitionModel(unittest.TestCase):
 
     def setUp(self):
-        self.test_state = RaceState(1, 50, SOFT, 0, 110, [], [(1, MEDIUM)], 1, False, 0, SILVERSTONE, False, -1)
+        self.test_state = RaceState(1, 50, SOFT, 0, 110, [], [(1, MEDIUM)], 1, False, 0, SILVERSTONE, False)
 
     def test_more_tyre_wear_when_pushing(self):
-        tyre_wear(self.test_state, Action.NORMAL)
+        tyre_wear(self.test_state, Action.STAY_OUT)
         normal_wear = self.test_state.tyre_wear
         self.setUp()
         tyre_wear(self.test_state, Action.PUSH)
@@ -20,28 +20,28 @@ class TestTransitionModel(unittest.TestCase):
 
     def test_tyre_wear_pit(self):
         self.test_state.tyre_wear = 0.8
-        apply_action(self.test_state, Action.PIT)
+        apply_action(self.test_state, Action.PIT_MEDIUM)
         self.assertEqual(self.test_state.tyre_wear, 0)
 
     def test_fuel_decrease(self):
         original_fuel = self.test_state.fuel_load
-        decrease_fuel(self.test_state, Action.NORMAL)
+        decrease_fuel(self.test_state, Action.STAY_OUT)
         self.assertLess(self.test_state.fuel_load, original_fuel)
 
     def test_push_faster_than_normal(self):
-        normal_lap = apply_action(self.test_state, Action.NORMAL)
+        normal_lap = apply_action(self.test_state, Action.STAY_OUT)
         self.setUp()
         push_lap = apply_action(self.test_state, Action.PUSH)
         self.assertLess(push_lap, normal_lap)
 
     def test_normal_faster_than_pit(self):
-        normal_lap = apply_action(self.test_state, Action.NORMAL)
+        normal_lap = apply_action(self.test_state, Action.STAY_OUT)
         self.setUp()
-        pit_lap = apply_action(self.test_state, Action.PIT)
+        pit_lap = apply_action(self.test_state, Action.PIT_MEDIUM)
         self.assertLess(normal_lap, pit_lap)
 
     def test_more_wear_means_slower_lap(self):
-        for action in [Action.NORMAL, Action.PUSH]:
+        for action in [Action.STAY_OUT, Action.PUSH]:
             self.setUp()
             first_lap = apply_action(self.test_state, action)
             self.setUp()
@@ -50,7 +50,7 @@ class TestTransitionModel(unittest.TestCase):
             self.assertGreater(second_lap, first_lap)
 
     def test_less_fuel_means_faster_time(self):
-        for action in [Action.NORMAL, Action.PUSH]:
+        for action in [Action.STAY_OUT, Action.PUSH]:
             self.setUp()
             first_lap = apply_action(self.test_state, action)
             self.setUp()
@@ -60,58 +60,54 @@ class TestTransitionModel(unittest.TestCase):
 
     def test_lap_times_are_recorded(self):
         for _ in range(5):
-            apply_action(self.test_state, Action.NORMAL)
+            apply_action(self.test_state, Action.STAY_OUT)
         self.assertEqual(len(self.test_state.lap_time_history), 5)
 
     def test_medium_tyre_wears_slower_than_soft(self):
-        apply_action(self.test_state, Action.NORMAL)
+        apply_action(self.test_state, Action.STAY_OUT)
         soft_wear = self.test_state.tyre_wear
         self.setUp()
         self.test_state.tyre_compound = MEDIUM
-        apply_action(self.test_state, Action.NORMAL)
+        apply_action(self.test_state, Action.STAY_OUT)
         medium_wear = self.test_state.tyre_wear
         self.assertGreater(soft_wear, medium_wear)
 
     def test_hard_tyre_wears_slower_than_medium(self):
         self.test_state.tyre_compound = MEDIUM
-        apply_action(self.test_state, Action.NORMAL)
+        apply_action(self.test_state, Action.STAY_OUT)
         medium_wear = self.test_state.tyre_wear
         self.setUp()
         self.test_state.tyre_compound = HARD
-        apply_action(self.test_state, Action.NORMAL)
+        apply_action(self.test_state, Action.STAY_OUT)
         hard_wear = self.test_state.tyre_wear
         self.assertGreater(medium_wear, hard_wear)
 
     def test_medium_tyre_slower_than_soft(self):
-        soft_lap = apply_action(self.test_state, Action.NORMAL)
+        soft_lap = apply_action(self.test_state, Action.STAY_OUT)
         self.setUp()
         self.test_state.tyre_compound = MEDIUM
-        medium_lap = apply_action(self.test_state, Action.NORMAL)
+        medium_lap = apply_action(self.test_state, Action.STAY_OUT)
         self.assertGreater(medium_lap, soft_lap)
 
     def test_hard_tyre_slower_than_medium(self):
         self.test_state.tyre_compound = MEDIUM
-        medium_lap = apply_action(self.test_state, Action.NORMAL)
+        medium_lap = apply_action(self.test_state, Action.STAY_OUT)
         self.setUp()
         self.test_state.tyre_compound = HARD
-        hard_lap = apply_action(self.test_state, Action.NORMAL)
+        hard_lap = apply_action(self.test_state, Action.STAY_OUT)
         self.assertGreater(hard_lap, medium_lap)
 
-    def test_stint_number_increase_when_pit(self):
-        apply_action(self.test_state, Action.PIT)
-        self.assertEqual(self.test_state.stint_num, 2)
-
     def test_tyre_change_when_pitting(self):
-        apply_action(self.test_state, Action.PIT)
+        apply_action(self.test_state, Action.PIT_MEDIUM)
         self.assertEqual(self.test_state.tyre_compound, MEDIUM)
 
-    def test_tyre_wear_never_more_than_one(self):
-        self.test_state.tyre_wear = 0.999999
+    def test_tyre_wear_never_more_than_three(self):
+        self.test_state.tyre_wear = 2.999999
         tyre_wear(self.test_state, Action.PUSH)
-        self.assertEqual(self.test_state.tyre_wear, 1)
-        self.test_state.tyre_wear = 0.999999
-        tyre_wear(self.test_state, Action.NORMAL)
-        self.assertEqual(self.test_state.tyre_wear, 1)
+        self.assertEqual(self.test_state.tyre_wear, 3)
+        self.test_state.tyre_wear = 2.999999
+        tyre_wear(self.test_state, Action.STAY_OUT)
+        self.assertEqual(self.test_state.tyre_wear, 3)
 
     def test_fuel_multiplier_endpoints(self):
         self.assertEqual(0.9 * (11/9)**(self.test_state.fuel_load/110), 1.1)
@@ -123,22 +119,22 @@ class TestTransitionModel(unittest.TestCase):
 
     def test_tyre_wear_is_non_linear(self):
         wear1 = self.test_state.tyre_wear
-        tyre_wear(self.test_state, Action.NORMAL)
+        tyre_wear(self.test_state, Action.STAY_OUT)
         wear2 = self.test_state.tyre_wear
-        tyre_wear(self.test_state, Action.NORMAL)
+        tyre_wear(self.test_state, Action.STAY_OUT)
         wear3 = self.test_state.tyre_wear
         self.assertNotEqual(wear2 - wear1, wear3 - wear2)
 
     def test_more_fuel_burn_when_more_fuel(self):
-        decrease_fuel(self.test_state, Action.NORMAL)
+        decrease_fuel(self.test_state, Action.STAY_OUT)
         burn1 = 110 - self.test_state.fuel_load
         self.test_state.fuel_load = 10
-        decrease_fuel(self.test_state, Action.NORMAL)
+        decrease_fuel(self.test_state, Action.STAY_OUT)
         burn2 = 10 - self.test_state.fuel_load
         self.assertGreater(burn2, burn1)
 
     def test_push_increases_fuel_burn(self):
-        decrease_fuel(self.test_state, Action.NORMAL)
+        decrease_fuel(self.test_state, Action.STAY_OUT)
         normal_burn = 110 - self.test_state.fuel_load
         self.setUp()
         decrease_fuel(self.test_state, Action.PUSH)
@@ -147,33 +143,33 @@ class TestTransitionModel(unittest.TestCase):
 
     def test_out_of_fuel_triggers_dnf(self):
         self.test_state.fuel_load = 1
-        decrease_fuel(self.test_state, Action.NORMAL)
+        decrease_fuel(self.test_state, Action.STAY_OUT)
         self.assertTrue(self.test_state.dnf)
 
     def test_stint_length_resets_on_pit(self):
-        apply_action(self.test_state, Action.PIT)
+        apply_action(self.test_state, Action.PIT_MEDIUM)
         self.assertEqual(self.test_state.stint_length, 0)
 
     def test_stint_length_increases(self):
-        apply_action(self.test_state, Action.NORMAL)
+        apply_action(self.test_state, Action.STAY_OUT)
         self.assertEqual(self.test_state.stint_length, 1)
 
     def test_tyre_warmup_penalty_soft(self):
         self.assertEqual(tyre_warmup_penalty(self.test_state), 1.5)
 
     def test_tyre_warmup_penalty_medium(self):
-        apply_action(self.test_state, Action.PIT)
+        apply_action(self.test_state, Action.PIT_MEDIUM)
         penalty = tyre_warmup_penalty(self.test_state)
-        apply_action(self.test_state, Action.NORMAL)
+        apply_action(self.test_state, Action.STAY_OUT)
         penalty += tyre_warmup_penalty(self.test_state)
         self.assertEqual(penalty, 2.5)
 
     def test_tyre_warmup_penalty_hard(self):
         self.test_state.tyre_compound = HARD
         penalty = tyre_warmup_penalty(self.test_state)
-        apply_action(self.test_state, Action.NORMAL)
+        apply_action(self.test_state, Action.STAY_OUT)
         penalty += tyre_warmup_penalty(self.test_state)
-        apply_action(self.test_state, Action.NORMAL)
+        apply_action(self.test_state, Action.STAY_OUT)
         penalty += tyre_warmup_penalty(self.test_state)
         self.assertEqual(penalty, 4)
 
@@ -183,34 +179,35 @@ class TestTransitionModel(unittest.TestCase):
         self.assertEqual(penalty, 0.2)
 
     def test_more_tyre_wear_on_higher_wear_track(self):
-        tyre_wear(self.test_state, Action.NORMAL)
+        tyre_wear(self.test_state, Action.STAY_OUT)
         higher_wear = self.test_state.tyre_wear
         self.setUp()
         self.test_state.track = MONZA
-        tyre_wear(self.test_state, Action.NORMAL)
+        tyre_wear(self.test_state, Action.STAY_OUT)
         lower_wear = self.test_state.tyre_wear
         self.assertGreater(higher_wear, lower_wear)
 
     def test_more_fuel_burn_on_higher_burn_track(self):
-        decrease_fuel(self.test_state, Action.NORMAL)
+        decrease_fuel(self.test_state, Action.STAY_OUT)
         higher_fuel = self.test_state.fuel_load
         self.setUp()
         self.test_state.track = MONZA
-        decrease_fuel(self.test_state, Action.NORMAL)
+        decrease_fuel(self.test_state, Action.STAY_OUT)
         lower_fuel = self.test_state.fuel_load
         self.assertGreater(higher_fuel, lower_fuel)
 
     def test_faster_lap_time_on_quicker_track(self):
-        lap1 = apply_action(self.test_state, Action.NORMAL)
+        lap1 = apply_action(self.test_state, Action.STAY_OUT)
         self.setUp()
         self.test_state.track = MONACO
-        lap2 = apply_action(self.test_state, Action.NORMAL)
+        lap2 = apply_action(self.test_state, Action.STAY_OUT)
         self.assertGreater(lap1, lap2)
 
+    # Can fail now that stochastic behaviour is implemented, but track evolution is correct
     def test_track_evolution(self):
-        lap1 = apply_action(self.test_state, Action.NORMAL)
+        lap1 = apply_action(self.test_state, Action.STAY_OUT)
         self.setUp()
         self.test_state.current_lap = 2
-        lap2 = apply_action(self.test_state, Action.NORMAL)
+        lap2 = apply_action(self.test_state, Action.STAY_OUT)
         self.assertGreater(lap1, lap2)
 

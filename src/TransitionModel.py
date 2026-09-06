@@ -33,14 +33,15 @@ def decrease_fuel(race_state, action):
 
 
 
-def pit_stop(race_state, lap_time):
+def pit_stop(race_state, lap_time, action_val):
     if race_state.safety_car:
         BASE_PIT_STOP_TIME = 10
     else:
         BASE_PIT_STOP_TIME = 23
     lap_time += BASE_PIT_STOP_TIME + gauss(0, 0.4)
-    race_state.tyre_compound = race_state.pit_stops[race_state.stint_num-1][1]
-    race_state.stint_num += 1
+    # race_state.tyre_compound = race_state.pit_stops[race_state.stint_num-1][1]
+    race_state.tyre_compound = [SOFT, MEDIUM, HARD][action_val]
+    # race_state.stint_num += 1
     race_state.tyre_wear = 0
     race_state.stint_length = -1
     return lap_time
@@ -75,8 +76,8 @@ def compute_lap_time(race_state, action):
         lap_time += gauss(0, race_state.tyre_compound.lap_time_sigma)
     if action == Action.PUSH:
         lap_time -= PUSH_TIME_SAVE
-    if action == Action.PIT:
-        lap_time = pit_stop(race_state, lap_time)
+    if action.value < 3:
+        lap_time = pit_stop(race_state, lap_time, action.value)
     return round(lap_time, 7)
         
 
@@ -87,13 +88,14 @@ def apply_action(race_state, action):
     race_state.current_lap += 1
     race_state.stint_length += 1
     race_state.lap_time_history.append(lap_time)
-    if uniform(0, 1) <= race_state.track.sc_probability:
-        race_state.safety_car = True
-        race_state.sc_laps_remaining = uniform(2, 5)
     if race_state.safety_car:
-        race_state.sc_laps_remaining -= 1
-        if race_state.sc_laps_remaining < 0:
+        print("safety car!")
+        if uniform(0, 1) < 0.35:
             race_state.safety_car = False
+            print("safety car end")
+    else:
+        if uniform(0, 1) <= race_state.track.sc_probability:
+            race_state.safety_car = True
     return lap_time
 
 

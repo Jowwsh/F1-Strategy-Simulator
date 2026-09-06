@@ -49,8 +49,8 @@
 * In order for an MDP to be viable as opposed to a brute force search, the transitions between states (laps) must feature stochastic elements
 * Lap time has been given random noise, using a gaussian distribution. The standard deviation of this distribution depends on the tyre choice, with softer tyres having more variance
 * Tyre wear has also been modified with the addition of a uniform distribution to the base tyre wear, simulating the realism tyre wear in F1
-* Safety cars have a set probability to appear each lap, dependent on the chosen track. They then last between 2 and 5 laps
-* Safety cars increase base lap time (but decrease lap time variance), decrease tyre wear and fuel burn, and importantly, reduce pit stop time
+* The safety car has a set probability to appear each lap, dependent on the chosen track. The safety car then has a 25% chance to end on any lap after it is released
+* The safety car increases base lap time (but decreases lap time variance), decreases tyre wear and fuel burn, and importantly, reduces pit stop time
 * I tested these probabilities and effects by running simulations many times to confirm the expected value was accurate, and analysing the lap times.
 
 ## The strategy search
@@ -72,6 +72,17 @@
 * It returns a tuple containing the best full race time, the starting tyre for the optimal strategy, and the full race state (containing lap time history and details of pit stops)
 * It works by generating all possible tyre strategies, then simulating a full racw with every pit lap combination on every tyre strategy
 * This tuple is formatted and printed by main.py
+
+### Third prototype
+* The third prototype successfully uses a Markov Decision Process and value iteration to find the optimal policy, which is the optimal strategy
+* To accomplish this, the race state model had to be changed from continuous to discrete, in order to have a finite number of states in the MDP
+* These discrete variables are `lap`, `compound_id`, `wear_bin`, `fuel_bin`, `stint_lap` and `safety_car_flag`
+* This is all that is needed to be known on any individual lap to calculate the optimal action to take. It has no history of previous lap information, therefore satisfies the Markov Property
+* Tyre wear and fuel load were discretised into 15 'bins', in order to make value iteration possible and fast. Stint lap is small enough to not be capped
+* These bins still preserve the realistic behaviour of the transition model
+* These 'discrete states' are turned into the race states used before and then ran through the transition model, before being discretised again
+* The reward from each transition is negative lap time, as reward is maximised through value iteration. A DNF creates a large negative reward
+* Each transition is repeated many times because of the stochastic nature of the transition model, to generate an expected value (Monte-Carlo sampling)
 
 ## Mathematical modelling
 

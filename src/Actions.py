@@ -1,6 +1,8 @@
 from enum import Enum
 
 class Action(Enum):
-    PIT = 1
-    NORMAL = 2
-    PUSH = 3
+    PIT_SOFT = 0
+    PIT_MEDIUM = 1
+    PIT_HARD = 2
+    STAY_OUT = 3
+    PUSH = 4

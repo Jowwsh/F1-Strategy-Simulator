@@ -7,11 +7,19 @@ from src.TyreCompounds import SOFT, MEDIUM, HARD
 def simulate_race(race_state):
     start_tyres = race_state.tyre_compound
     pit_laps = [x[0] for x in race_state.pit_stops]
+    tyres_left = [x[1] for x in race_state.pit_stops]
     for lap in range(1, race_state.total_laps+1):
         if lap in pit_laps:
-            lap_time = apply_action(race_state, Action.PIT)
+            if tyres_left[0].name == "Soft":
+                action = Action.PIT_SOFT
+            elif tyres_left[0].name == "Medium":
+                action = Action.PIT_MEDIUM
+            else:
+                action = Action.PIT_HARD
+            apply_action(race_state, action)
+            tyres_left.pop(0)
         else:
-            lap_time = apply_action(race_state, Action.NORMAL)
+            apply_action(race_state, Action.STAY_OUT)
         if race_state.dnf:
             return (99999999999999999, start_tyres, race_state)
     return (sum(race_state.lap_time_history), start_tyres, race_state)
@@ -35,20 +43,20 @@ def find_best_strategy(track):
         # one stop
         if len(strategy) == 2:
             for pit_lap in range(1, total_laps):
-                race_state = RaceState(1, total_laps, strategy[0], 0, MAX_FUEL, [], [(pit_lap, strategy[1])], 1, False, 0, track, False, -1)
+                race_state = RaceState(1, total_laps, strategy[0], 0, MAX_FUEL, [], [(pit_lap, strategy[1])], 1, False, 0, track, False)
                 race_info.append(simulate_race(race_state))
         # two stops
         elif len(strategy) == 3:
             for pit_lap_1 in range(1, total_laps-1):
                 for pit_lap_2 in range(pit_lap_1+1, total_laps):
-                    race_state = RaceState(1, total_laps, strategy[0], 0, MAX_FUEL, [], [(pit_lap_1, strategy[1]), (pit_lap_2, strategy[2])], 1, False, 0, track, False, -1)
+                    race_state = RaceState(1, total_laps, strategy[0], 0, MAX_FUEL, [], [(pit_lap_1, strategy[1]), (pit_lap_2, strategy[2])], 1, False, 0, track, False)
                     race_info.append(simulate_race(race_state))
         # 3 stops
         else:
             for pit_lap_1 in range(1, total_laps-2):
                 for pit_lap_2 in range(pit_lap_1+1, total_laps-1):
                     for pit_lap_3 in range(pit_lap_2+1, total_laps):
-                        race_state = RaceState(1, total_laps, strategy[0], 0, MAX_FUEL, [], [(pit_lap_1, strategy[1]), (pit_lap_2, strategy[2]), (pit_lap_3, strategy[3])], 1, False, 0, track, False, -1)
+                        race_state = RaceState(1, total_laps, strategy[0], 0, MAX_FUEL, [], [(pit_lap_1, strategy[1]), (pit_lap_2, strategy[2]), (pit_lap_3, strategy[3])], 1, False, 0, track, False)
                         race_info.append(simulate_race(race_state))
                         
 

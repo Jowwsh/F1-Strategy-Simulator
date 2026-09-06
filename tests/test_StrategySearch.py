@@ -1,7 +1,7 @@
 import unittest
 from src.StrategySearch import generate_strategies
 
-class TestTransitionModel(unittest.TestCase):
+class TestStrategySearch(unittest.TestCase):
 
     def setUp(self):
         self.strategies = generate_strategies()
