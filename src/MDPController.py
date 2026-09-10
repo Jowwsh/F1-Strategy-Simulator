@@ -28,8 +28,7 @@ def discrete_to_race_state(discrete_state, track):
         stint_length=discrete_state.real_stint_lap,
         track=track,
         safety_car=bool(discrete_state.safety_car_flag),
-        allowed_pit_strategy=discrete_state.allowed_pit_strategy,
-        is_final_lap=discrete_state.is_final_lap
+        allowed_pit_strategy=discrete_state.allowed_pit_strategy
     )
 
 def race_to_discrete_state(race_state):
@@ -44,13 +43,12 @@ def race_to_discrete_state(race_state):
         allowed_pit_strategy=race_state.allowed_pit_strategy,
         continuous_wear=race_state.tyre_wear,
         continuous_fuel=race_state.fuel_load,
-        real_stint_lap=race_state.stint_length,
-        is_final_lap=race_state.is_final_lap
+        real_stint_lap=race_state.stint_length
     )
 
 def calculate_reward(lap_time, dnf):
     if dnf:
-        return -1000
+        return -2000
     return -lap_time
 
 def transition(discrete_state, action, track):
@@ -71,3 +69,33 @@ def transition_distribution(transition_cache, state, action, track, samples=200)
         outcomes.append((next_state.state_to_tuple(), reward))
     transition_cache[key] = outcomes
     return outcomes
+
+def simulate_policy(track, policy, start_tyre_name):
+    tyre_map = {
+        "Soft": SOFT,
+        "Medium": MEDIUM,
+        "Hard": HARD
+    }
+    race_state = RaceState(
+        current_lap=1,
+        total_laps=track.laps,
+        tyre_compound=tyre_map[start_tyre_name],
+        tyre_wear=0,
+        fuel_load=109.999,
+        lap_time_history=[],
+        pit_stops=[],
+        stint_num=1,
+        dnf=False,
+        stint_length=0,
+        track=track,
+        safety_car=False,
+        allowed_pit_strategy=False
+        )
+    
+    while race_state.current_lap <= race_state.total_laps and not race_state.dnf:
+        discrete_state = race_to_discrete_state(race_state)
+        action = policy[discrete_state.state_to_tuple()]
+        apply_action(race_state, action)
+        if action.value < 3:
+            race_state.pit_stops.append((race_state.current_lap, race_state.tyre_compound.name))
+    return race_state

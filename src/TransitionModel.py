@@ -40,7 +40,7 @@ def pit_stop(race_state, lap_time, action_val):
         BASE_PIT_STOP_TIME = 23
     lap_time += BASE_PIT_STOP_TIME + gauss(0, 0.4)
     # race_state.tyre_compound = race_state.pit_stops[race_state.stint_num-1][1]
-    if race_state.tyre_compound != [SOFT, MEDIUM, HARD][action_val]:
+    if race_state.tyre_compound.name != ([SOFT, MEDIUM, HARD][action_val]).name:
         race_state.allowed_pit_strategy = True
     race_state.tyre_compound = [SOFT, MEDIUM, HARD][action_val]
     # race_state.stint_num += 1
@@ -88,9 +88,6 @@ def apply_action(race_state, action):
     decrease_fuel(race_state, action)
     lap_time = compute_lap_time(race_state, action)
     race_state.current_lap += 1
-    if race_state.current_lap >= race_state.total_laps:
-        race_state.current_lap = race_state.total_laps
-        race_state.is_final_lap = True
     race_state.stint_length += 1
     if race_state.current_lap == race_state.total_laps and not race_state.allowed_pit_strategy:
         race_state.dnf = True
