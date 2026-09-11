@@ -6,12 +6,12 @@ from src.MDPController import simulate_policy
 from pickle import load
 
 if __name__ == "__main__":
-    # policy, start_tyre = train_and_save_policy(track=SPA)
-    with open("policies/spa_policy.pkl", "rb") as f:
-        data = load(f)
-    policy = data["policy"]
-    start_tyre = data["start tyre"]
-    print("loaded policy")
+    policy, start_tyre = train_and_save_policy(track=SPA)
+    # with open("policies/spa_policy.pkl", "rb") as f:
+    #     data = load(f)
+    # policy = data["policy"]
+    # start_tyre = data["start tyre"]
+    # print("loaded policy")
     race_state = simulate_policy(track=SPA, policy=policy, start_tyre_name=start_tyre)
     pit_strategy = race_state.pit_stops
     print(pit_strategy)

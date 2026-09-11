@@ -46,7 +46,7 @@ def iterate_until_convergence(track, transition_cache):
     states = generate_states(track)
     V = defaultdict(float)
     for iteration in range(MAX_ITERATIONS):
-        print(f"On iteration {iteration}")
+        # print(f"On iteration {iteration}")
         delta = 0
         for x, state in enumerate(states):
             if iteration == 0:

@@ -13,6 +13,6 @@ class DiscreteState:
         self.real_stint_lap = real_stint_lap
 
     def state_to_tuple(self):
-        return (self.lap, self.tyre_compound_id, self.wear_bin, self.fuel_bin, self.stint_lap_bin, self.safety_car_flag)
+        return (self.lap, self.tyre_compound_id, self.wear_bin, self.fuel_bin, self.stint_lap_bin, self.safety_car_flag, self.allowed_pit_strategy)
 
 
