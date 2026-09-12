@@ -28,12 +28,12 @@ def bellman_update(V, state, track, transition_cache):
     GAMMA = 0.99
     if state.lap == track.laps:
         action = Action.STAY_OUT
-        outcomes = transition_distribution(transition_cache, state, action, track, samples=200)
+        outcomes = transition_distribution(transition_cache, state, action, track, samples=20)
         expected_value = sum(reward for (_, reward) in outcomes) / len(outcomes)
         return expected_value
     best_value = -inf 
     for action in Action:
-        outcomes = transition_distribution(transition_cache, state, action, track, samples=200)
+        outcomes = transition_distribution(transition_cache, state, action, track, samples=20)
         expected_value = 0
         for (next_state_tuple, reward) in outcomes:
             expected_value += (reward + GAMMA * V[next_state_tuple]) / len(outcomes)
@@ -49,7 +49,7 @@ def iterate_until_convergence(track, transition_cache):
         # print(f"On iteration {iteration}")
         delta = 0
         for x, state in enumerate(states):
-            if iteration == 0:
+            if iteration == 0 and x % 1000 == 0:
                 print(f"state {x} of {len(states)}")
             state_tuple = state.state_to_tuple()
             new_value = bellman_update(V, state, track, transition_cache)

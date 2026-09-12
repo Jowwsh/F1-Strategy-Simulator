@@ -58,7 +58,7 @@ def transition(discrete_state, action, track):
     reward = calculate_reward(lap_time, race_state.dnf)
     return (next_state, reward)
 
-def transition_distribution(transition_cache, state, action, track, samples=200):
+def transition_distribution(transition_cache, state, action, track, samples=20):
     
     key = (state.state_to_tuple(), action)
     if key in transition_cache:
@@ -95,6 +95,7 @@ def simulate_policy(track, policy, start_tyre_name):
     while race_state.current_lap <= race_state.total_laps and not race_state.dnf:
         discrete_state = race_to_discrete_state(race_state)
         action = policy[discrete_state.state_to_tuple()]
+        print(discrete_state.state_to_tuple())
         apply_action(race_state, action)
         if action.value < 3:
             race_state.pit_stops.append((race_state.current_lap, race_state.tyre_compound.name))

@@ -18,15 +18,15 @@ def tyre_wear(race_state, action):
         race_state.tyre_wear = 3
 
 def decrease_fuel(race_state, action):
-    MAX_FUEL = 110
+    MAX_FUEL = 109.999
     PUSH_MULTIPLIER = 1.5
-    fuel_rate = (86 * race_state.track.fuel_factor) / race_state.total_laps
+    fuel_rate = 100 / race_state.total_laps
     if race_state.safety_car:
         fuel_rate /= 2.5
     if action == Action.PUSH:
-        race_state.fuel_load -= fuel_rate * race_state.tyre_compound.fuel_multiplier * (1.15 - (race_state.fuel_load / MAX_FUEL) * 0.3) * PUSH_MULTIPLIER
+        race_state.fuel_load -= fuel_rate #  * race_state.tyre_compound.fuel_multiplier * (0.85 + (race_state.fuel_load / MAX_FUEL) * 0.3) * PUSH_MULTIPLIER
     else:
-        race_state.fuel_load -= fuel_rate * race_state.tyre_compound.fuel_multiplier * (1.15 - (race_state.fuel_load / MAX_FUEL) * 0.3)
+        race_state.fuel_load -= fuel_rate # * race_state.tyre_compound.fuel_multiplier * (0.85 + (race_state.fuel_load / MAX_FUEL) * 0.3)
     if race_state.fuel_load <= 0:
         race_state.fuel_load = 0
         race_state.dnf = True
