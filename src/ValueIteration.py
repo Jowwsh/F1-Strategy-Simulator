@@ -10,9 +10,9 @@ def generate_states(track):
     states = []
     for lap in range(1, track.laps + 1):
         for tyre_compound_id in range(3):
-            for wear_bin in range(10):
+            for wear_bin in range(30):
                 for fuel_bin in range(10):
-                    for stint_lap_bin in range(track.laps // 8 + 1):
+                    for stint_lap_bin in range(track.laps // 5 + 3):
                         for safety_car_flag in range(2):
                             for allowed_pit_strategy in range(2):
                                 states.append(DiscreteState(

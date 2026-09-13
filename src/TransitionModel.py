@@ -98,6 +98,7 @@ def apply_action(race_state, action):
     else:
         if uniform(0, 1) <= race_state.track.sc_probability:
             race_state.safety_car = True
+            # print(f"safety car on lap {race_state.current_lap}")
     return lap_time
 
 

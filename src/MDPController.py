@@ -4,14 +4,18 @@ from src.TransitionModel import apply_action
 from src.TyreCompounds import SOFT, MEDIUM, HARD
 
 def discretise_wear(wear):
-    wear_bin = int(wear * 3)
-    return min(max(wear_bin, 0), 9)
+    wear_bin = int(wear * 10)
+    return min(max(wear_bin, 0), 29)
 
 def discretise_fuel(fuel_load):
     MAX_FUEL = 109.999
     fuel_bin = int(fuel_load * (9/MAX_FUEL))
     return min(max(fuel_bin, 0), 9)
 
+def bin_stint_lap(stint_lap):
+    if stint_lap < 3:
+        return stint_lap
+    return min((stint_lap - 3) // 5 + 3, 0)
 
 def discrete_to_race_state(discrete_state, track):
     tyre = [SOFT, MEDIUM, HARD][discrete_state.tyre_compound_id]
@@ -38,7 +42,7 @@ def race_to_discrete_state(race_state):
         tyre_compound_id=tyre_id,
         wear_bin=discretise_wear(race_state.tyre_wear),
         fuel_bin=discretise_fuel(race_state.fuel_load),
-        stint_lap_bin=min(race_state.stint_length // 8, race_state.total_laps // 8),
+        stint_lap_bin=bin_stint_lap(race_state.stint_length),
         safety_car_flag=int(race_state.safety_car),
         allowed_pit_strategy=race_state.allowed_pit_strategy,
         continuous_wear=race_state.tyre_wear,
