@@ -15,12 +15,16 @@ def generate_states(track):
                     for stint_lap_bin in range(track.laps // 5 + 3):
                         for safety_car_flag in range(2):
                             for allowed_pit_strategy in range(2):
+                                if stint_lap_bin >= 3:
+                                    real_stint_lap = (stint_lap_bin - 2) * 5
+                                else:
+                                    real_stint_lap = stint_lap_bin
                                 states.append(DiscreteState(
                                     lap, tyre_compound_id, wear_bin, fuel_bin,
                                     stint_lap_bin, safety_car_flag,
-                                    allowed_pit_strategy, wear_bin/3,
+                                    allowed_pit_strategy, wear_bin/10,
                                     fuel_bin*(109.999/9),
-                                    stint_lap_bin*8
+                                    real_stint_lap
                                 ))
     return states
 
@@ -74,7 +78,7 @@ def get_optimal_policy(V, track, transition_cache):
         best_action = None
         best_value = -inf
         for action in Action:
-            outcomes = transition_distribution(transition_cache, state, action, track, samples=200)
+            outcomes = transition_distribution(transition_cache, state, action, track, samples=20)
             expected_value = 0
             for (next_state_tuple, reward) in outcomes:
                 expected_value += (reward + GAMMA * V[next_state_tuple]) / len(outcomes)

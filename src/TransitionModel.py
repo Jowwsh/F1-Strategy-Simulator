@@ -91,6 +91,7 @@ def apply_action(race_state, action):
     race_state.stint_length += 1
     if race_state.current_lap == race_state.total_laps and not race_state.allowed_pit_strategy:
         race_state.dnf = True
+        print("just hit a dnf")
     race_state.lap_time_history.append(lap_time)
     if race_state.safety_car:
         if uniform(0, 1) < 0.35:

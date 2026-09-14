@@ -17,8 +17,8 @@ if __name__ == "__main__":
     print(pit_strategy)
     print("\n")
     print(f"{race_state.total_laps} laps around {race_state.track.name}")
-    print(f"\nBest strategy: {len(pit_strategy)} stop strategy\nStart on {start_tyre} tyres\nPit on lap {pit_strategy[0][0]} for {pit_strategy[0][1]} tyres")
-    for i in range(1, len(pit_strategy)):
+    print(f"\nBest strategy: {len(pit_strategy)} stop strategy\nStart on {start_tyre} tyres")
+    for i in range(0, len(pit_strategy)):
         print(f"Pit on lap {pit_strategy[i][0]} for {pit_strategy[i][1]} tyres")
     # if len(pit_strategy) >= 2:
     #     print(f"Pit on lap {pit_strategy[1][0]} for {pit_strategy[1][1]} tyres")

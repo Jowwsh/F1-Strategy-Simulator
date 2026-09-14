@@ -15,7 +15,7 @@ def discretise_fuel(fuel_load):
 def bin_stint_lap(stint_lap):
     if stint_lap < 3:
         return stint_lap
-    return min((stint_lap - 3) // 5 + 3, 0)
+    return max((stint_lap - 3) // 5 + 3, 0)
 
 def discrete_to_race_state(discrete_state, track):
     tyre = [SOFT, MEDIUM, HARD][discrete_state.tyre_compound_id]
