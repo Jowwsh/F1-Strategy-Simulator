@@ -4,8 +4,14 @@ from src.TransitionModel import apply_action
 from src.TyreCompounds import SOFT, MEDIUM, HARD
 
 def discretise_wear(wear):
+    if wear < 2:
+        wear_bin = int(wear * 10)
+    elif wear < 3:
+        wear_bin = 20 + (wear - 2) // 0.2
+    else:
+        wear_bin = 22 + int(wear)
     wear_bin = int(wear * 10)
-    return min(max(wear_bin, 0), 29)
+    return min(max(wear_bin, 0), 32)
 
 def discretise_fuel(fuel_load):
     MAX_FUEL = 109.999
